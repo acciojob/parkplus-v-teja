@@ -1,6 +1,7 @@
 package com.driver.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -67,7 +68,9 @@ public class User {
         this.reservationList = reservationList;
     }
 
-    public User(){}
+    public User(){
+        this.reservationList = new ArrayList<>();
+    }
 
     public User(String name, String phoneNumber, String password, List<Reservation> reservationList) {
         this.name = name;

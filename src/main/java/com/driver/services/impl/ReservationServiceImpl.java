@@ -31,62 +31,51 @@ public class ReservationServiceImpl implements ReservationService {
         //If parkingLot is not found, user is not found, or no spot is available, throw "Cannot make reservation" exception.
         Reservation reservation = null;
         try{
+           if(!parkingLotRepository3.findById(parkingLotId).isPresent() || !userRepository3.findById(userId).isPresent()){
+               throw new Exception("Cannot make reservation");
+           }
+
+            User user = userRepository3.findById(userId).get();
             ParkingLot parkingLot = parkingLotRepository3.findById(parkingLotId).get();
-            if(parkingLot==null){
-                throw new Exception("Cannot make reservation");
-            }
-            User user  = userRepository3.findById(userId).get();
-            if(user==null){
-                throw new Exception("Cannot make reservation");
-            }
+
             List<Spot> spotList = parkingLot.getSpotList();
             Spot finalSpot = null;
+
             int totalPrice = Integer.MAX_VALUE;
             boolean success = false;
+
             for(Spot spot: spotList){
                 if(spot.getOccupied()==false){
                     int price = timeInHours * spot.getPricePerHour();
-                    if(finalSpot==null || totalPrice > price){
+                    if(finalSpot==null || price<totalPrice){
                         totalPrice = price;
                         finalSpot = spot;
+                        if( (finalSpot.getSpotType()==SpotType.TWO_WHEELER && numberOfWheels<=2) || (finalSpot.getSpotType()==SpotType.FOUR_WHEELER && numberOfWheels<=4)
+                                || (finalSpot.getSpotType()==SpotType.OTHERS && numberOfWheels>4)){
+                           reservation = new Reservation();
+                            finalSpot.setOccupied(Boolean.TRUE);
+                            reservation.setNumberOfHours(timeInHours);
+                            reservation.setSpot(finalSpot);
+                            reservation.setUser(user);
+
+
+                            //updating user
+                            user.getReservationList().add(reservation);
+                            //updating spot
+                            finalSpot.getReservationList().add(reservation);
+
+                            userRepository3.save(user);
+                            spotRepository3.save(finalSpot);
+
+                            success=true;
+                            return reservation;
+                        }
                     }
                 }
             }
 
             if(finalSpot==null){
                 throw new Exception("Cannot make reservation");
-            }
-            reservation = new Reservation();
-            if( (finalSpot.getSpotType()==SpotType.TWO_WHEELER && numberOfWheels<=2) || (finalSpot.getSpotType()==SpotType.FOUR_WHEELER && numberOfWheels<=4)
-                    || (finalSpot.getSpotType()==SpotType.OTHERS && numberOfWheels>4)){
-                finalSpot.setOccupied(Boolean.TRUE);
-                reservation.setNumberOfHours(timeInHours);
-                reservation.setSpot(finalSpot);
-                reservation.setUser(user);
-
-
-                //updating list of spot
-                List<Reservation> reservationList = finalSpot.getReservationList();
-                if(reservationList!=null){
-                    reservationList.add(reservation);
-                }else{
-                    reservationList = new ArrayList<>();
-                    reservationList.add(reservation);
-                }
-
-                //updating list of user
-                List<Reservation> reservationList1 = user.getReservationList();
-                if(reservationList1!=null){
-                    reservationList1.add(reservation);
-                }else{
-                    reservationList1=new ArrayList<>();
-                    reservationList1.add(reservation);
-                }
-
-                userRepository3.save(user);
-                spotRepository3.save(finalSpot);
-
-                success=true;
             }
 
             if(success==false){
