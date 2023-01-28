@@ -44,7 +44,7 @@ public class ReservationServiceImpl implements ReservationService {
             int totalPrice = Integer.MAX_VALUE;
             boolean success = false;
             for(Spot spot: spotList){
-                if(spot.isOccupied()==false){
+                if(spot.getOccupied()==false){
                     int price = timeInHours * spot.getPricePerHour();
                     if(finalSpot==null || totalPrice > price){
                         finalSpot = spot;

@@ -33,6 +33,7 @@ public class Spot {
         this.id = id;
     }
 
+
     public SpotType getSpotType() {
         return spotType;
     }
@@ -49,7 +50,7 @@ public class Spot {
         this.pricePerHour = pricePerHour;
     }
 
-    public boolean isOccupied() {
+    public boolean getOccupied() {
         return occupied;
     }
 
