@@ -47,8 +47,8 @@ public class ReservationServiceImpl implements ReservationService {
                 if(spot.getOccupied()==false){
                     int price = timeInHours * spot.getPricePerHour();
                     if(finalSpot==null || totalPrice > price){
+                        totalPrice = price;
                         finalSpot = spot;
-
                     }
                 }
             }
@@ -56,10 +56,10 @@ public class ReservationServiceImpl implements ReservationService {
             if(finalSpot==null){
                 throw new Exception("Cannot make reservation");
             }
-
             reservation = new Reservation();
             if( (finalSpot.getSpotType()==SpotType.TWO_WHEELER && numberOfWheels<=2) || (finalSpot.getSpotType()==SpotType.FOUR_WHEELER && numberOfWheels<=4)
                     || (finalSpot.getSpotType()==SpotType.OTHERS && numberOfWheels>4)){
+                finalSpot.setOccupied(Boolean.TRUE);
                 reservation.setNumberOfHours(timeInHours);
                 reservation.setSpot(finalSpot);
                 reservation.setUser(user);
@@ -83,9 +83,9 @@ public class ReservationServiceImpl implements ReservationService {
                     reservationList1.add(reservation);
                 }
 
-                spotRepository3.save(finalSpot);
                 userRepository3.save(user);
-                reservationRepository3.save(reservation);
+                spotRepository3.save(finalSpot);
+
                 success=true;
             }
 
