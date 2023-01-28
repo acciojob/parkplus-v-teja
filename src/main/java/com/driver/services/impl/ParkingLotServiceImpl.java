@@ -24,7 +24,9 @@ public class ParkingLotServiceImpl implements ParkingLotService {
 
     @Override
     public ParkingLot addParkingLot(String name, String address) {
-        ParkingLot parkingLot = new ParkingLot(name,address);
+        ParkingLot parkingLot = new ParkingLot();
+        parkingLot.setName(name);
+        parkingLot.setAddress(address);
         parkingLotRepository1.save(parkingLot);
         return parkingLot;
     }
@@ -33,6 +35,9 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     public Spot addSpot(int parkingLotId, Integer numberOfWheels, Integer pricePerHour) {
         Spot newSpot = new Spot();
         ParkingLot parkingLot = parkingLotRepository1.findById(parkingLotId).get();
+        if(parkingLot==null){
+            return null;
+        }
         newSpot.setParkingLot(parkingLot);
         newSpot.setOccupied(Boolean.FALSE);
         newSpot.setPricePerHour(pricePerHour);
@@ -62,6 +67,9 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     @Override
     public void deleteSpot(int spotId) {
         Spot spot = spotRepository1.findById(spotId).get();
+        if(spot==null){
+            return;
+        }
         spotRepository1.delete(spot);
     }
 
@@ -69,6 +77,9 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     public Spot updateSpot(int parkingLotId, int spotId, int pricePerHour) {
         ParkingLot parkingLot = parkingLotRepository1.findById(parkingLotId).get();
         Spot spot = spotRepository1.findById(spotId).get();
+        if(spot==null){
+            return spot;
+        }
         spot.setPricePerHour(pricePerHour);
         spotRepository1.save(spot);
 
@@ -78,6 +89,9 @@ public class ParkingLotServiceImpl implements ParkingLotService {
     @Override
     public void deleteParkingLot(int parkingLotId) {
         ParkingLot parkingLot = parkingLotRepository1.findById(parkingLotId).get();
+        if(parkingLot==null){
+            return;
+        }
         parkingLotRepository1.delete(parkingLot);
     }
 }
