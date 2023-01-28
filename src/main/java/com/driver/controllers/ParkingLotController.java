@@ -21,14 +21,8 @@ public class ParkingLotController {
     @PostMapping("/add")
     public ResponseEntity<ParkingLot> addParkingLot(@RequestParam String name, @RequestParam String address) {
         //add a new parking lot to the database
-        ParkingLot newParkingLot = null;
-        try {
-            newParkingLot = parkingLotService.addParkingLot(name, address);
-        } catch (Exception e) {
-            System.out.println(e);
-        }
 
-        return new ResponseEntity<>(newParkingLot, HttpStatus.CREATED);
+        return new ResponseEntity<>(parkingLotService.addParkingLot(name,address), HttpStatus.CREATED);
     }
 
     @PostMapping("/{parkingLotId}/spot/add")

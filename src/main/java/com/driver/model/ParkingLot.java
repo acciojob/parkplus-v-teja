@@ -16,7 +16,7 @@ public class ParkingLot {
     private String Address;
 
     @OneToMany(mappedBy = "parkingLot",cascade = CascadeType.ALL)
-    private List<Spot> spotList;
+    private List<Spot> spotList = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -62,11 +62,6 @@ public class ParkingLot {
     public ParkingLot(){
     }
 
-    public ParkingLot(String name, String address) {
-        this.name = name;
-        Address = address;
-        this.spotList = new ArrayList<>();
-    }
 
     public ParkingLot(String name, String address, List<Spot> spotList) {
         this.name = name;

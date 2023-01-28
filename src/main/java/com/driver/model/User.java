@@ -18,7 +18,7 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
-    private List<Reservation> reservationList;
+    private List<Reservation> reservationList = new ArrayList<>();
 
     public int getId() {
         return id;
@@ -69,7 +69,6 @@ public class User {
     }
 
     public User(){
-        this.reservationList = new ArrayList<>();
     }
 
     public User(String name, String phoneNumber, String password, List<Reservation> reservationList) {

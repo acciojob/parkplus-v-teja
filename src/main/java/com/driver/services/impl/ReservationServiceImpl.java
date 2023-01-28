@@ -49,26 +49,12 @@ public class ReservationServiceImpl implements ReservationService {
                     int price = timeInHours * spot.getPricePerHour();
                     if(finalSpot==null || price<totalPrice){
                         totalPrice = price;
-                        finalSpot = spot;
-                        if( (finalSpot.getSpotType()==SpotType.TWO_WHEELER && numberOfWheels<=2) || (finalSpot.getSpotType()==SpotType.FOUR_WHEELER && numberOfWheels<=4)
-                                || (finalSpot.getSpotType()==SpotType.OTHERS && numberOfWheels>4)){
-                           reservation = new Reservation();
-                            finalSpot.setOccupied(Boolean.TRUE);
-                            reservation.setNumberOfHours(timeInHours);
-                            reservation.setSpot(finalSpot);
-                            reservation.setUser(user);
 
+                        if( (spot.getSpotType()==SpotType.TWO_WHEELER && numberOfWheels<=2) || (spot.getSpotType()==SpotType.FOUR_WHEELER && numberOfWheels<=4)
+                                || (spot.getSpotType()==SpotType.OTHERS && numberOfWheels>4)){
 
-                            //updating user
-                            user.getReservationList().add(reservation);
-                            //updating spot
-                            finalSpot.getReservationList().add(reservation);
-
-                            userRepository3.save(user);
-                            spotRepository3.save(finalSpot);
-
+                            finalSpot = spot;
                             success=true;
-                            return reservation;
                         }
                     }
                 }
@@ -81,6 +67,21 @@ public class ReservationServiceImpl implements ReservationService {
             if(success==false){
                 throw new Exception("Cannot make reservation");
             }
+
+            reservation = new Reservation();
+            finalSpot.setOccupied(Boolean.TRUE);
+            reservation.setNumberOfHours(timeInHours);
+            reservation.setSpot(finalSpot);
+            reservation.setUser(user);
+
+
+            //updating user
+            user.getReservationList().add(reservation);
+            //updating spot
+            finalSpot.getReservationList().add(reservation);
+
+            userRepository3.save(user);
+            spotRepository3.save(finalSpot);
 
         }catch(Exception e){
             System.out.println(e);
